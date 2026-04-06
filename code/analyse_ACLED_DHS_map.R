@@ -1,8 +1,9 @@
 # Netoyer et indiquer le repertoire de travail
+# install.packages("here")
+library(here)
+
 rm(list = ls()) 
 set.seed(3)
-workdir <- "D:\\Disk F\\RAMMPS\\Rammps\\traitement_et_apurement\\estimation_morta"
-setwd(workdir)
 
 
 # install.packages("htmltools")
@@ -56,9 +57,9 @@ library(scales)
 
 # Télécharger les données -------------------------------------------------
 
-gedevents_2025_01_17 <- read_csv("D:/User/Downloads/gedevents-2025-01-17.csv")
+gedevents_2025_01_17 <- read_csv("data", "gedevents-2025-01-17.csv")
 
-ucdp <- read_delim("D:/User/Downloads/2016-02-01-2025-01-16-Western_Africa-Burkina_Faso.csv", 
+ucdp <- read_delim("data", "2016-02-01-2025-01-16-Western_Africa-Burkina_Faso.csv", 
                                                                  delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
 head(ucdp)
@@ -104,7 +105,7 @@ ordre_regions <- heatmap_data %>%
 # 2. Convertir admin1 en facteur ordonné
 heatmap_data$admin1 <- factor(heatmap_data$admin1, levels = ordre_regions)
 
-pdf('C:/Users/dianou/Desktop/RaMMPS-CSH/figures/figure2_trend.pdf', width = 7*2*0.8, height =7*1*0.8)
+pdf('../figures/figure2_trend.pdf', width = 7*2*0.8, height =7*1*0.8)
 # 3. Graphique avec l'ordre imposé
 ggplot(heatmap_data[heatmap_data$Annee < 2025,], 
        aes(x = Annee, y = admin1, fill = Nombre_evenements)) +
@@ -127,7 +128,7 @@ graphics.off()
 # Cartes régional Burkina Faso --------------------------------------------
 
 # gadm41_BFA_1
-burkina_regions <- st_read("D:/Disk F/2020/travaux_uclouvain/vaccinal_coverage/gadm41_BFA_1.shp")
+burkina_regions <- st_read("data", "gadm41_BFA_1.shp")
 
 # Afficher la structure pour voir les colonnes disponibles
 print(burkina_regions)
@@ -141,7 +142,7 @@ burkina_centroids$NAME_1 <- burkina_regions$NAME_1
 
 # Graphique avec les proportions des zones enquêtées et non  --------------
 
-dhs_surv <- read_excel("D:/Disk F/2020/travaux_uclouvain/projet_de_these/special_collection_DR/prop_surveyed.xlsx")
+dhs_surv <- read_excel("data", "prop_surveyed.xlsx")
 
 dhs_surv <- dhs_surv %>%
   mutate(prop_ns_pct = round(prop_ns * 100, 1))
@@ -173,7 +174,7 @@ burkina_centroids <- burkina_centroids %>%
   left_join(dhs_surv, by = c("region" = "region"))
 
 # Exporter en PDF
-pdf('Figure1_Map_dhs.pdf', width = 7*2*0.8, height = 7*2*0.8)
+pdf( '../figures/Figure1_Map_dhs.pdf', width = 7*2*0.8, height = 7*2*0.8)
 
 
 # Créer la carte
